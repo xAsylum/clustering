@@ -1,4 +1,8 @@
 from enum import Enum
+
+from sklearn.metrics import silhouette_score
+from matplotlib import pyplot as plt
+
 from metric import *
 import numpy as np
 
@@ -85,6 +89,22 @@ class HierarchicalClusterization:
                     labels[sample_idx] = cluster_idx
 
         return labels, history
+
+    def silhouette_score(self):
+        sil_scores = []
+        K = range(2, 20)
+
+        for k in K:
+            self.k = k
+            labels, _ = self.fit()
+            sil_score = silhouette_score(self.data, labels)
+            sil_scores.append(sil_score)
+
+        plt.plot(K, sil_scores, marker='o')
+        plt.xlabel("Number of Clusters (k)")
+        plt.ylabel("Silhouette Score")
+        plt.title("Silhouette Method for Optimal k")
+        plt.show()
 
     def lance_williams_update(self, dist_matrix, i, j, k, cluster_sizes):
         n_i = cluster_sizes[i]

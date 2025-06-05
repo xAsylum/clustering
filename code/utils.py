@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-
 def open_file(name, class_description: bool):
     X = []
     Y = []
@@ -64,3 +63,23 @@ def plot_data(X, Y, label, xlabel, ylabel):
     plt.grid(True, which="both", linestyle='--', linewidth=0.5)
     plt.tight_layout()
     plt.show()
+
+def corr(data):
+    n = data[0].shape[0]
+    corr_matrix = np.corrcoef([data[i][:n] for i in range(len(data))], rowvar=False)
+    plt.figure(figsize=(8, 6))
+    im = plt.imshow(corr_matrix, cmap='coolwarm', vmin=-1, vmax=1)
+    plt.colorbar(im)
+
+    labels = [f"X{i}" for i in range(n)]
+    plt.xticks(ticks=np.arange(n), labels=labels, rotation=45, ha='right')
+    plt.yticks(ticks=np.arange(n), labels=labels)
+
+    plt.title("Correlation Matrix")
+    plt.tight_layout()
+    plt.show()
+
+def select(data, idx):
+    data = np.asarray(data)
+    idx = np.asarray(idx)
+    return data[:, idx]

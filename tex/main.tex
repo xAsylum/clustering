@@ -207,7 +207,7 @@ Spróbujmy do tego skorzystać z metody łokciowej. Poniżej przedstawiam wykres
     \end{subfigure}
     \label{fig:data_grid}
 \end{figure} \\
-\noindent Widzimy, że pierwszy i drugi wykres się wypłaszcza po $k = 6$, zaś szósty przy $k = 15$, a przy siódmym i ósmym wykresie najwiekszy spadek jest przy $k = 2$. Jednak korzystając z tej metody ciężko jednoznacznie wyznaczyć liczbę klastrów.
+\noindent Widzimy, że pierwszy i drugi wykres się wypłaszcza po $k = 6$, zaś szósty przy $k = 15$, a przy siódmym i ósmym wykresie najwiekszy spadek jest przy $k = 2$. Jednak korzystając z tej metody ciężko jednoznacznie wyznaczyć liczbę klastrów. W późniejszej części raportu przeanalizujemy resztę zbiorów korzystając z innej metody.
 
 
 \section*{Miara dokładności}
@@ -491,7 +491,7 @@ Zestaw nr 8 & 0.541 \\
     \label{fig:data_grid}
 \end{figure} \FloatBarrier
 
-\section{Dane 18D}
+\section{Dane 18D i metoda sylwetkowa}
 Zacznijmy od analizy z użyciem metody łokciowej. Wykresy zależności błędu od liczby klastrów przedstawiają się następująco.
 
 \begin{figure}[h!]
@@ -511,7 +511,97 @@ Zacznijmy od analizy z użyciem metody łokciowej. Wykresy zależności błędu 
     \label{fig:data_grid}
 \end{figure} \FloatBarrier
 
-Możemy zauważyć, że w obydwu przypadkach $k = 6$ jest pewnym punktem przełamania.
+\noindent Pierwsze co wywnioskowałem, to że w obydwu przypadkach $k = 6$ jest pewnym punktem przełamania. Jednak postanowiłem posłużyć się również metodą sylwetkową w celu ustalenia optymalnego $k$. Jednak w związku z dużym rozmiarem danych spróbowałem uprościć trochę wektor cech. Przyjrzyjmy się macierzy korelacji naszych danych
+\begin{figure}[h!]
+\centering
+        \includegraphics[width=0.4\linewidth]{img/corr.png}
+        \captionsetup{labelformat=empty}
+        \caption{Macierz korelacji}
+\end{figure} \FloatBarrier
+Widzimy że wiele cech jest między sobą silnie zależnych, więc spośród nich wszystkich wybrałem cechy $[0, 4, 5, 6, 13, 14, 15, 16, 17]$. Jednak zdziwił mnie wynik metody sylwetkowej więc algorytm powtórzyłem na zbiorze danych bez zależności.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.30\textwidth}
+        \includegraphics[width=\linewidth]{img/silhouette_full.png}
+        \captionsetup{labelformat=empty}
+        \centering
+        \caption{Metoda sylwestkowa dla pełnego zbioru}
+    \end{subfigure}
+    \hspace{}
+    \begin{subfigure}[b]{0.30\textwidth}
+        \includegraphics[width=\linewidth]{img/sillhouette_reduced.png}
+        \captionsetup{labelformat=empty}
+        \centering
+        \caption{Metoda sylwetkowa dla uproszczonego zbioru}
+    \end{subfigure}
+
+    \label{fig:data_grid}
+\end{figure} \FloatBarrier
+
+\noindent Widzimy że w obydwu przypadkach szczyt wykresu przypada dla $k = 2$. Mimo że wnioski dla obu metod się nie pokrywają, to optymalna liczba klas jest gdzieś pomiędzy $2$ i $6$. \smallskip \\
+Korzystając z okazji, sprawdźmy jak metoda sylwetkowa poradzi sobie na wyznaczaniu liczby cech dla zestawów 3, 4, 5 i 6. Ze względu na kształt danych, dla zestawu $4$ używam łączenia pojedynczego, a dla pozostałych łączenia centroidalnego. Spójrzmy na wykresy dla naszych danych
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.30\textwidth}
+        \includegraphics[width=\linewidth]{img/silhouette3.png}
+        \captionsetup{labelformat=empty}
+        \centering\caption{Metoda sylwestkowa dla zestawu 3}
+    \end{subfigure}
+    \hspace{}
+    \begin{subfigure}[b]{0.30\textwidth}
+        \includegraphics[width=\linewidth]{img/silhouette4.png}
+        \captionsetup{labelformat=empty}
+        \centering
+        \centering\caption{Metoda sylwetkowa dla zestawu 4}
+    \end{subfigure}
+    \hspace{}
+    \begin{subfigure}[b]{0.30\textwidth}
+        \includegraphics[width=\linewidth]{img/silhouette6.png}
+        \captionsetup{labelformat=empty}
+        \centering
+        \centering\caption{Metoda sylwetkowa dla zestawu 6}
+    \end{subfigure}
+
+    \label{fig:data_grid}
+\end{figure} \FloatBarrier
+
+\noindent Widzimy, że dla zestawu 3 maximum występuje dla $k = 3$, dla zestawu 4 dla $k = 2$, a dla zestawu 6 dla $k = 16$. Niestety brakuje tu danych dla zestawu $5$, gdyż tą sekcję robiłem bliżej deadline i miałem jeszcze kilka algorytmów do odpalenia, i jak zobaczyłem że po $3h$ jeszcze się nie policzyło to się poddałem. \smallskip \\
+W tym przypadku metoda sylwetkowa okazała się być bardzo skuteczna (z dokładnością +/- 1), zatem w ostatecznym rozrachunku skłaniałbym się w kierunku $2$ klas dla danych 18D. Na koniec porównajmy nasze modele na znanym nam z wcześniejszego projektu pliku.
+
+
 \section{Plik rp.data}
-Tutaj będzie porównanie algorytmów i metryk na tym pliku
+W tym rozdziale chciałbym przedstawić wyniki moich modeli na pliku \texttt{rp.data}, biorąc liczbę klas $k = 2$.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Model} & \textbf{Accuracy} \\
+\hline
+KMeans (Euclidean Metric (E)) & 0.924 \\
+KMeans (Hamming Metric (H)) & 0.545 \\
+KMeans (Manhattan Metric (M)) & 0.897 \\
+Hierarchical (E, Singular) & 0.545 \\
+Hierarchical (E, Full) & 0.800 \\
+Hierarchical (E, Mean) & 0.892 \\
+Hierarchical (E, Centroid) & 0.545 \\
+Hierarchical (E, Ward) & 0.929 \\
+Hierarchical (M, Full) & 0.837 \\
+Hierarchical (M, Mean) & 0.887 \\
+Hierarchical (M, Ward) & 0.932 \\
+Spectral (E, $\sigma = 0.0125$) & 0.897 \\
+Spectral (E, $\sigma = 0.05$) & 0.854 \\
+Spectral (E, $\sigma = 0.5$) & 0.547 \\
+\hline
+\end{tabular}
+\caption{Benchmark modeli na zbiorze rp.data}
+\end{table}
+
+\section{Podsumowanie}
+Porównując algorytmy, każdy z nich przydaje się do różnych zbiorów danych. Były przypadki gdy algorytm \texttt{k-średnich} radził sobie najlepiej, w innych \texttt{grupowanie hierarchiczne} czy \texttt{klasteryzacja spektralna} wypadały lepiej. Jednak najszybszy z nich zdecydowanie był algorytm \texttt{k-średnich}. Różne kombinacje różnych ustawień sprawdzały się inaczej dla każdego ze zbiorów danych. Zaskakująco, algorytm \texttt{k-średnich} zdominował przy pliku \texttt{rp.data}, pokonywało go nieznacznie grupowanie hierarchiczne dla metryki Manhattan i Łączenia Warda. Dla klasteryzacji spektralnej było jeszcze więcej parametrów, bo nie tylko kontrolowaliśmy końcowy algorytm łączenia ale również hiperparametr $\sigma$, który zachowywał się różnie dla różnych zbiorów danych. \smallskip \\
+Porównując różne metody wyznaczania liczby klastrów, żadna nie wypadła bezkonkurencyjnie. Metoda łokciowa nie była łatwa do rozczytania, za to dosyć szybka bo korzystała z algorytmy k-średnich. Z drugiej strony metoda sylwetkowa często dawała jednoznaczny rezultat, ale z uwagi na wykorzystanie grupowania hierarchicznego była kosztowna obliczeniowo. Bywało też tak że analizując dane obydwoma metodami dochodziłem do różnych wniosków. \smallskip \\
+Ostatecznie na wszystkich zbiorach osiągnąłem zadowalający wynik, jednak nie było algorytmu który poradziłby sobie przyzwoicie w każdej sytuacji.
 \end{document}

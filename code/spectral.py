@@ -51,6 +51,6 @@ class SpectralClusterization:
 
         #model = KMeans(spectral_embeddings, self.metric_type, self.k)
         #model.fit()
-        model = HierarchicalClusterization(LinkageType.Centroid, self.metric_type, spectral_embeddings, self.k)
+        model = HierarchicalClusterization(LinkageType.Full, self.metric_type, spectral_embeddings, self.k)
         labels, history = model.fit()
         self.labels = labels
